@@ -21,17 +21,6 @@ const App = () => {
     }
 
 
-
-    onCharSelected = (id) => {
-        this.setState({
-            selectedChar: id
-        })
-    }
-
-
-
-
-
         return (
             <div className="app">
                 <AppHeader />
