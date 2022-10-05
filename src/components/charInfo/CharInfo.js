@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState, useEffect, useRef } from 'react';
 import { PropTypes } from 'prop-types';
 
 import './charInfo.scss';
@@ -8,69 +8,53 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 import Skeleton from '../skeleton/Skeleton';
 
-class CharInfo extends Component {
+const CharInfo = (props) => {
 
-    state = {
-        char: null,
-        loading: false,
-        error: false
-    }
+    const [char, setChar] = useState(null);
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
-    marvelServices = new MarvelServices();
+    const marvelServices = new MarvelServices();
 
-    componentDidMount() {
-        this.updateChar();
-    }
+    useEffect(() => {
+        updateChar()
+    }, [props.charId])
 
-    componentDidUpdate(prevProps){
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar();
-        }
-    }
-
-    updateChar = () => {
-        const {charId} = this.props;
+    const updateChar = () => {
+        const { charId } = props;
         if (!charId) {
             return;
         }
 
-        this.onCharLoading();
+        onCharLoading();
 
-        this.marvelServices
+        marvelServices
             .getCharacters(charId)
-            .then(this.onCharLoaded)
-            .catch(this.onError);
-
-        // this.foo.bar = 0;
+            .then(onCharLoaded)
+            .catch(onError);
     }
 
-    onCharLoaded = (char) => {
-        this.setState({
-            char, 
-            loading: false
-        })
+    const onCharLoaded = (char) => {
+        setChar(char);
+        setLoading(false)
     }
 
-    onCharLoading = () => {
-        this.setState({
-            loading: true
-        })
+    const onCharLoading = () => {
+       setLoading(true)
     }
 
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
+    const onError = () => {
+        setLoading(false);
+        setError(true)
     }
 
-    render() {
-        const {char, loading, error} = this.state;
 
-        const skeleton = char || loading || error ? null : <Skeleton/>;
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error || !char) ? <View char={char}/> : null;
+        // const { char, loading, error } = this.state;
+
+        const skeleton = char || loading || error ? null : <Skeleton />;
+        const errorMessage = error ? <ErrorMessage /> : null;
+        const spinner = loading ? <Spinner /> : null;
+        const content = !(loading || error || !char) ? <View char={char} /> : null;
 
         return (
             <div className="char__info">
@@ -81,20 +65,20 @@ class CharInfo extends Component {
             </div>
         )
     }
-}
 
-const View = ({char}) => {
-    const {name, description, thumbnail, homepage, wiki, comics} = char;
 
-    let imgStyle = {'objectFit' : 'cover'};
+const View = ({ char }) => {
+    const { name, description, thumbnail, homepage, wiki, comics } = char;
+
+    let imgStyle = { 'objectFit': 'cover' };
     if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
-        imgStyle = {'objectFit' : 'contain'};
+        imgStyle = { 'objectFit': 'contain' };
     }
 
     return (
         <>
             <div className="char__basics">
-                <img src={thumbnail} alt={name} style={imgStyle}/>
+                <img src={thumbnail} alt={name} style={imgStyle} />
                 <div>
                     <div className="char__info-name">{name}</div>
                     <div className="char__btns">
@@ -122,14 +106,14 @@ const View = ({char}) => {
                             </li>
                         )
                     })
-                }                
+                }
             </ul>
         </>
     )
 }
 
 CharInfo.propTypes = {
-    charId: PropTypes.number 
+    charId: PropTypes.number
 }
 
 export default CharInfo;
