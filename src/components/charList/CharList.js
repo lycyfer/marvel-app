@@ -1,4 +1,4 @@
-import { Component, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './charList.scss';
 
@@ -13,6 +13,7 @@ const CharList = (props) => {
     const [newItemLoading, setNewItemLoading] = useState(false)
     const [offset, setOffset] = useState(210)
     const [charEnded, setCharEnded] = useState(false)
+
     const { loading, error, getAllCharacters } = useMarvelServices();
 
     useEffect(() => {
@@ -33,10 +34,10 @@ const CharList = (props) => {
             ended = true;
         }
 
-        setCharList(charList => [...charList, ...newCharList]);
+        setCharList([...charList, ...newCharList]);
         setNewItemLoading(false);
         setOffset(offset => offset + 9);
-        setCharEnded(charEnded => ended);
+        setCharEnded(ended);
     }
 
     const itemRefs = useRef([]);

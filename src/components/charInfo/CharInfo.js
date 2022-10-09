@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 
@@ -13,7 +13,7 @@ const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
     const { loading, error, getCharacters, clearError } = useMarvelServices();
-
+    
     useEffect(() => {
         updateChar()
     }, [props.charId])
@@ -47,6 +47,8 @@ const CharInfo = (props) => {
             {spinner}
             {content}
         </div>
+            
+
     )
 }
 
